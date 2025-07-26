@@ -1,0 +1,1 @@
+export { User, UserAttributes, initUserModel } from './models/User';
