@@ -6,16 +6,20 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc && mkdir -p dist/renderer && cp src/renderer/index.html dist/renderer/",
-    "dev": "tsc && mkdir -p dist/renderer && cp src/renderer/index.html dist/renderer/ && electron dist/main.js",
-    "start": "electron dist/main.js",
+    "dev": "tsc && mkdir -p dist/renderer && cp src/renderer/index.html dist/renderer/ && electron dist/main.js --no-sandbox",
+    "start": "electron dist/main.js --no-sandbox",
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "data-model": "workspace:*"
+    "data-model": "workspace:*",
+    "vue": "^3.5.18",
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@types/node": "^22.9.0",
+    "@vitejs/plugin-vue": "^6.0.0",
     "electron": "^33.0.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vite": "^7.0.6"
   }
 }
