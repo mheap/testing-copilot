@@ -29,10 +29,14 @@ async function createWindow() {
   mainWindow = new electron.BrowserWindow({
     height: 600,
     width: 800,
+    show: !process.env.CI,
+    // Don't show window in CI
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path__namespace.join(__dirname, "preload.js")
+      preload: path__namespace.join(__dirname, "preload.js"),
+      offscreen: process.env.CI
+      // Use offscreen rendering in CI
     }
   });
   mainWindow.loadFile(path__namespace.join(__dirname, "..", "dist", "index.html"));

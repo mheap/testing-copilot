@@ -16,10 +16,12 @@ async function createWindow(): Promise<void> {
   mainWindow = new BrowserWindow({
     height: 600,
     width: 800,
+    show: !process.env.CI, // Don't show window in CI
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
+      offscreen: process.env.CI, // Use offscreen rendering in CI
     },
   });
 

@@ -20,11 +20,21 @@ describe('Electron App Registration and Login', () => {
     process.env.TEST_DB_PATH = dbPath;
 
     // Launch Electron app
-    const args = [path.join(__dirname, '..', 'dist-electron', 'main.js'), '--no-sandbox'];
+    const args = [path.join(__dirname, '..', 'dist-electron', 'main.js')];
     
-    // Add additional args for CI environment
+    // Add minimal args needed for Electron to run
+    args.push('--no-sandbox');
+    
+    // Add additional args for CI environment to force offscreen rendering
     if (process.env.CI) {
-      args.push('--disable-dev-shm-usage', '--disable-gpu', '--disable-software-rasterizer');
+      args.push(
+        '--disable-dev-shm-usage', 
+        '--disable-gpu', 
+        '--disable-software-rasterizer',
+        '--disable-gpu-sandbox',
+        '--disable-web-security',
+        '--disable-features=VizDisplayCompositor'
+      );
     }
 
     electronApp = await electron.launch({
@@ -58,8 +68,8 @@ describe('Electron App Registration and Login', () => {
     const title = await page.title();
     expect(title).toBe('Robots are here');
     
-    // Check if the main heading is visible
-    const heading = await page.textContent('h1');
+    // Check if the main heading is visible - use a more flexible selector
+    const heading = await page.locator('h1').textContent();
     expect(heading).toContain('Robots are here!');
   });
 
