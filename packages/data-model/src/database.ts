@@ -55,6 +55,10 @@ export class Database {
     return await User.findOne({ order: [['id', 'ASC']] })
   }
   
+  async createUser(name: string, email: string) {
+    return await User.create({ name, email })
+  }
+  
   async close(): Promise<void> {
     await this.sequelize.close()
   }

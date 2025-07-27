@@ -39,6 +39,16 @@ async function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 }
+electron.ipcMain.handle("register-user", async (event, userData) => {
+  try {
+    const { name, email, password } = userData;
+    const user = await database.createUser(name, email);
+    return { success: true, user: user.toJSON() };
+  } catch (error) {
+    console.error("Registration error:", error);
+    return { success: false, error: error.message };
+  }
+});
 electron.ipcMain.handle("login-user", async () => {
   try {
     const user = await database.getFirstUser();

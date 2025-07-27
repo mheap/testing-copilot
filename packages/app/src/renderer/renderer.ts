@@ -203,15 +203,31 @@ const Register = {
       password: ''
     })
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       console.log('Register form submitted:', form.value)
-      showToast('Success!')
       
-      // Reset form
-      form.value = {
-        name: '',
-        email: '',
-        password: ''
+      try {
+        const result = await (window as any).electronAPI.registerUser(form.value)
+        if (result.success) {
+          showToast('Registration successful!')
+          console.log('User registered:', result.user)
+          
+          // Reset form
+          form.value = {
+            name: '',
+            email: '',
+            password: ''
+          }
+          
+          // Navigate to login page
+          const router = getCurrentRouter()
+          router.push('/login')
+        } else {
+          showToast('Registration failed: ' + result.error, 3000, 'error')
+        }
+      } catch (error) {
+        console.error('Registration error:', error)
+        showToast('Registration failed: ' + (error as Error).message, 3000, 'error')
       }
     }
 
@@ -389,14 +405,15 @@ const Dashboard = {
 }
 
 // Toast utility function
-function showToast(message: string, duration: number = 3000) {
+function showToast(message: string, duration: number = 3000, type: 'success' | 'error' = 'success') {
   const existingToast = document.querySelector('.toast')
   if (existingToast) {
     existingToast.remove()
   }
 
+  const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500'
   const toast = document.createElement('div')
-  toast.className = 'toast fixed top-5 right-5 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg z-50 opacity-0 transition-opacity duration-300'
+  toast.className = `toast fixed top-5 right-5 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg z-50 opacity-0 transition-opacity duration-300`
   toast.textContent = message
   
   document.body.appendChild(toast)
@@ -441,6 +458,7 @@ function getCurrentRouter() {
 declare global {
   interface Window {
     electronAPI: {
+      registerUser: (userData: any) => Promise<{ success: boolean; user?: any; error?: string }>
       loginUser: () => Promise<{ success: boolean; user: any }>
       getCurrentUser: () => Promise<any>
       logout: () => Promise<void>

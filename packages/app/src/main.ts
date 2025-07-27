@@ -32,6 +32,17 @@ async function createWindow(): Promise<void> {
 }
 
 // IPC handlers
+ipcMain.handle('register-user', async (event, userData) => {
+  try {
+    const { name, email, password } = userData;
+    const user = await database.createUser(name, email);
+    return { success: true, user: user.toJSON() };
+  } catch (error) {
+    console.error('Registration error:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
 ipcMain.handle('login-user', async () => {
   try {
     const user = await database.getFirstUser();
