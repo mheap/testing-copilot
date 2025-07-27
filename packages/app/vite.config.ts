@@ -42,17 +42,18 @@ export default defineConfig(({ command }) => ({
         },
         vite: {
           build: {
+            lib: {
+              entry: 'src/preload.ts',
+              formats: ['cjs'],
+              fileName: () => 'preload.cjs'
+            },
             sourcemap: false,
             minify: false,
             outDir: 'dist-electron',
             rollupOptions: {
-              external: ['electron'],
-              output: {
-                format: 'es',
-                entryFileNames: '[name].js',
-                exports: 'named'
-              }
-            }
+              external: ['electron']
+            },
+            target: 'node14'
           }
         }
       }
