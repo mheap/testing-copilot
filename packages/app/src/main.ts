@@ -7,8 +7,9 @@ let database: Database;
 let currentUser: any = null;
 
 async function createWindow(): Promise<void> {
-  // Initialize database
-  database = new Database();
+  // Initialize database with test path if provided
+  const dbPath = process.env.TEST_DB_PATH;
+  database = new Database(dbPath);
   await database.connect();
 
   // Create the browser window

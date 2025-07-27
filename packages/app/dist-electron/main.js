@@ -23,7 +23,8 @@ let mainWindow;
 let database;
 let currentUser = null;
 async function createWindow() {
-  database = new dataModel.Database();
+  const dbPath = process.env.TEST_DB_PATH;
+  database = new dataModel.Database(dbPath);
   await database.connect();
   mainWindow = new electron.BrowserWindow({
     height: 600,
