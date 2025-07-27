@@ -3,12 +3,12 @@
   "productName": "Robots are here",
   "version": "1.0.0",
   "description": "A TypeScript Electron application",
-  "main": "dist/main.js",
+  "main": "dist-electron/main.js",
   "scripts": {
-    "build": "tsc && tsc -p tsconfig.renderer.json && mkdir -p dist/renderer && cp src/renderer/index.html dist/renderer/ && mkdir -p dist/node_modules/tailwindcss && cp node_modules/tailwindcss/index.css dist/node_modules/tailwindcss/",
-    "dev": "tsc && tsc -p tsconfig.renderer.json && mkdir -p dist/renderer && cp src/renderer/index.html dist/renderer/ && mkdir -p dist/node_modules/tailwindcss && cp node_modules/tailwindcss/index.css dist/node_modules/tailwindcss/ && electron dist/main.js --no-sandbox",
-    "start": "electron dist/main.js --no-sandbox",
-    "clean": "rm -rf dist"
+    "build": "vite build",
+    "dev": "vite",
+    "start": "electron dist-electron/main.js --no-sandbox",
+    "clean": "rm -rf dist dist-electron"
   },
   "dependencies": {
     "data-model": "workspace:*",
@@ -16,6 +16,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^22.9.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "autoprefixer": "^10.4.21",
@@ -23,6 +24,8 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.6.3",
-    "vite": "^7.0.6"
+    "vite": "^7.0.6",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-electron-renderer": "^0.14.6"
   }
 }

@@ -8,7 +8,7 @@ echo "Building the application..."
 pnpm build
 
 echo "Starting Electron app in test mode..."
-timeout 10s electron dist/main.js --no-sandbox > test_output.log 2>&1 &
+timeout 10s npx electron dist-electron/main.js --no-sandbox > test_output.log 2>&1 &
 APP_PID=$!
 
 # Wait for app to start

@@ -1,6 +1,7 @@
 // Renderer process code
 import { createApp, ref } from 'vue'
 import { createRouter, createWebHashHistory, RouterView } from 'vue-router'
+import './styles.css'
 
 // App Layout Component with Navigation
 const AppLayout = {

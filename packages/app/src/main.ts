@@ -23,7 +23,7 @@ async function createWindow(): Promise<void> {
   });
 
   // Load the app
-  mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
+  mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
 
   // Open the DevTools in development
   if (process.env.NODE_ENV === 'development') {
