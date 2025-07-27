@@ -1,32 +1,14 @@
-"use strict";
-const electron = require("electron");
-const path = require("path");
-const dataModel = require("data-model");
-function _interopNamespaceDefault(e) {
-  const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
-  if (e) {
-    for (const k in e) {
-      if (k !== "default") {
-        const d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: () => e[k]
-        });
-      }
-    }
-  }
-  n.default = e;
-  return Object.freeze(n);
-}
-const path__namespace = /* @__PURE__ */ _interopNamespaceDefault(path);
+import { ipcMain, app, BrowserWindow } from "electron";
+import * as path from "path";
+import { Database } from "data-model";
 let mainWindow;
 let database;
 let currentUser = null;
 async function createWindow() {
   const dbPath = process.env.TEST_DB_PATH;
-  database = new dataModel.Database(dbPath);
+  database = new Database(dbPath);
   await database.connect();
-  mainWindow = new electron.BrowserWindow({
+  mainWindow = new BrowserWindow({
     height: 600,
     width: 800,
     show: !process.env.CI,
@@ -34,17 +16,17 @@ async function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path__namespace.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.js"),
       offscreen: process.env.CI
       // Use offscreen rendering in CI
     }
   });
-  mainWindow.loadFile(path__namespace.join(__dirname, "..", "dist", "index.html"));
+  mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
   if (process.env.NODE_ENV === "development") {
     mainWindow.webContents.openDevTools();
   }
 }
-electron.ipcMain.handle("register-user", async (event, userData) => {
+ipcMain.handle("register-user", async (event, userData) => {
   try {
     const { name, email, password } = userData;
     const user = await database.createUser(name, email);
@@ -54,7 +36,7 @@ electron.ipcMain.handle("register-user", async (event, userData) => {
     return { success: false, error: error.message };
   }
 });
-electron.ipcMain.handle("login-user", async () => {
+ipcMain.handle("login-user", async () => {
   try {
     const user = await database.getFirstUser();
     if (user) {
@@ -67,24 +49,24 @@ electron.ipcMain.handle("login-user", async () => {
     return { success: false, error: error.message };
   }
 });
-electron.ipcMain.handle("get-current-user", async () => {
+ipcMain.handle("get-current-user", async () => {
   return currentUser ? currentUser.toJSON() : null;
 });
-electron.ipcMain.handle("logout", async () => {
+ipcMain.handle("logout", async () => {
   currentUser = null;
   return { success: true };
 });
-electron.app.whenReady().then(createWindow);
-electron.app.on("window-all-closed", async () => {
+app.whenReady().then(createWindow);
+app.on("window-all-closed", async () => {
   if (database) {
     await database.close();
   }
   if (process.platform !== "darwin") {
-    electron.app.quit();
+    app.quit();
   }
 });
-electron.app.on("activate", () => {
-  if (electron.BrowserWindow.getAllWindows().length === 0) {
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
 });

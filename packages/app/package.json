@@ -3,6 +3,7 @@
   "productName": "Robots are here",
   "version": "1.0.0",
   "description": "A TypeScript Electron application",
+  "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
     "build": "vite build",
