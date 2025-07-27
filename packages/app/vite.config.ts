@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     vue(),
     electron([
@@ -11,6 +11,10 @@ export default defineConfig({
         // Main-Process entry file of the Electron App.
         entry: 'src/main.ts',
         onstart(options) {
+          // Set development server URL for Electron main process
+          if (command === 'serve') {
+            process.env.VITE_DEV_SERVER_URL = 'http://localhost:3000'
+          }
           options.startup()
         },
         vite: {
@@ -56,6 +60,11 @@ export default defineConfig({
     // Use Node.js API in the Renderer-process
     renderer()
   ],
+  resolve: {
+    alias: {
+      'vue': 'vue/dist/vue.esm-bundler.js'
+    }
+  },
   optimizeDeps: {
     exclude: ['data-model']
   },
@@ -68,4 +77,4 @@ export default defineConfig({
       external: ['data-model']
     }
   }
-})
+}))

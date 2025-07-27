@@ -31,11 +31,14 @@ async function createWindow(): Promise<void> {
   });
 
   // Load the app
-  mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
-
-  // Open the DevTools in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.VITE_DEV_SERVER_URL) {
+    // In development, load from Vite dev server
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
+    // Open the DevTools in development
     mainWindow.webContents.openDevTools();
+  } else {
+    // In production, load from built files
+    mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
   }
 }
 

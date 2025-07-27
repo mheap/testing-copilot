@@ -24,9 +24,11 @@ async function createWindow() {
       // Use offscreen rendering in CI
     }
   });
-  mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
     mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
   }
 }
 ipcMain.handle("register-user", async (event, userData) => {
