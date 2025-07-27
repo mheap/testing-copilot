@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { initUserModel, User } from './models/User'
+import { initUserModel, User } from './models/User.js'
 import * as path from 'path'
 
 export class Database {

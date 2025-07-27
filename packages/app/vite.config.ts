@@ -21,8 +21,8 @@ export default defineConfig({
             rollupOptions: {
               external: ['electron', 'sequelize', 'sqlite3', 'data-model'],
               output: {
-                format: 'cjs',
-                entryFileNames: '[name].cjs',
+                format: 'es',
+                entryFileNames: '[name].js',
                 exports: 'named'
               }
             }
@@ -44,8 +44,8 @@ export default defineConfig({
             rollupOptions: {
               external: ['electron'],
               output: {
-                format: 'cjs',
-                entryFileNames: '[name].cjs',
+                format: 'es',
+                entryFileNames: '[name].js',
                 exports: 'named'
               }
             }

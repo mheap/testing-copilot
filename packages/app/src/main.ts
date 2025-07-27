@@ -20,7 +20,7 @@ async function createWindow(): Promise<void> {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.cjs'),
+      preload: path.join(__dirname, 'preload.js'),
       offscreen: process.env.CI, // Use offscreen rendering in CI
     },
   });

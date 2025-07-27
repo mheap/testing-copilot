@@ -1,6 +1,10 @@
-const { _electron: electron } = require('playwright');
-const path = require('path');
-const fs = require('fs');
+import { _electron as electron } from 'playwright';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('Electron App Smoke Test', () => {
   let electronApp;
@@ -33,7 +37,7 @@ describe('Electron App Smoke Test', () => {
 
   test('should launch Electron app and establish database connection', async () => {
     // Launch Electron app
-    const args = [path.join(__dirname, '..', 'dist-electron', 'main.cjs')];
+    const args = [path.join(__dirname, '..', 'dist-electron', 'main.js')];
     
     // Add minimal args needed for Electron to run
     args.push('--no-sandbox');
