@@ -1,12 +1,14 @@
 import { Sequelize } from 'sequelize'
-import { initUserModel, User } from './models/User'
+import { initUserModel, User } from './models/User.js'
 import * as path from 'path'
 
 export class Database {
   private sequelize: Sequelize
+  private skipBootstrap: boolean
   
-  constructor(dbPath?: string) {
+  constructor(dbPath?: string, skipBootstrap: boolean = false) {
     const dbLocation = dbPath || path.join(process.cwd(), 'database.sqlite')
+    this.skipBootstrap = skipBootstrap
     
     this.sequelize = new Sequelize({
       dialect: 'sqlite',
@@ -28,7 +30,9 @@ export class Database {
       console.log('Database synced successfully.')
       
       // Bootstrap test data
-      await this.bootstrapData()
+      if (!this.skipBootstrap) {
+        await this.bootstrapData()
+      }
     } catch (error) {
       console.error('Unable to connect to database:', error)
       throw error
@@ -53,6 +57,10 @@ export class Database {
   
   async getFirstUser() {
     return await User.findOne({ order: [['id', 'ASC']] })
+  }
+  
+  async createUser(name: string, email: string) {
+    return await User.create({ name, email })
   }
   
   async close(): Promise<void> {

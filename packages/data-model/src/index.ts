@@ -1,2 +1,2 @@
-export { User, UserAttributes, initUserModel } from './models/User';
-export { Database } from './database';
+export { User, UserAttributes, initUserModel } from './models/User.js';
+export { Database } from './database.js';
