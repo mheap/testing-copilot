@@ -9,6 +9,9 @@
     "dev": "vite",
     "start": "electron dist-electron/main.js --no-sandbox",
     "test": "jest",
+    "test:unit": "jest __tests__/database.test.js",
+    "test:e2e": "jest __tests__/electron-app.test.js",
+    "test:ci": "jest --passWithNoTests",
     "clean": "rm -rf dist dist-electron"
   },
   "dependencies": {

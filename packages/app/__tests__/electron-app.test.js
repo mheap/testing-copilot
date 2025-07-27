@@ -20,8 +20,15 @@ describe('Electron App Registration and Login', () => {
     process.env.TEST_DB_PATH = dbPath;
 
     // Launch Electron app
+    const args = [path.join(__dirname, '..', 'dist-electron', 'main.js'), '--no-sandbox'];
+    
+    // Add additional args for CI environment
+    if (process.env.CI) {
+      args.push('--disable-dev-shm-usage', '--disable-gpu', '--disable-software-rasterizer');
+    }
+
     electronApp = await electron.launch({
-      args: [path.join(__dirname, '..', 'dist-electron', 'main.js'), '--no-sandbox'],
+      args,
       cwd: path.join(__dirname, '..'),
       timeout: 30000
     });
