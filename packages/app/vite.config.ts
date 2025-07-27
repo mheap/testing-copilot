@@ -19,7 +19,12 @@ export default defineConfig({
             minify: false,
             outDir: 'dist-electron',
             rollupOptions: {
-              external: ['electron', 'sequelize', 'sqlite3', 'data-model']
+              external: ['electron', 'sequelize', 'sqlite3', 'data-model'],
+              output: {
+                format: 'cjs',
+                entryFileNames: '[name].cjs',
+                exports: 'named'
+              }
             }
           }
         }
@@ -37,7 +42,12 @@ export default defineConfig({
             minify: false,
             outDir: 'dist-electron',
             rollupOptions: {
-              external: ['electron']
+              external: ['electron'],
+              output: {
+                format: 'cjs',
+                entryFileNames: '[name].cjs',
+                exports: 'named'
+              }
             }
           }
         }
