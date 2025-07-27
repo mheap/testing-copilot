@@ -42,3 +42,7 @@ Thumbs.db
 
 # Electron
 dist_electron/
+
+# Database files
+*.sqlite
+*.db
