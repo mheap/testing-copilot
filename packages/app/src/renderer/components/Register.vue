@@ -83,7 +83,13 @@ const handleSubmit = async () => {
   console.log('Register form submitted:', form.value)
   
   try {
-    const result = await (window as any).electronAPI.registerUser(form.value)
+    // Convert reactive object to plain object for IPC serialization
+    const userData = {
+      name: form.value.name,
+      email: form.value.email,
+      password: form.value.password
+    }
+    const result = await (window as any).electronAPI.registerUser(userData)
     if (result.success) {
       showToast('Registration successful!')
       console.log('User registered:', result.user)
