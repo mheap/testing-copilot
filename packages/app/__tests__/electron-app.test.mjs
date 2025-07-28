@@ -7,7 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 describe('Electron App Smoke Test', () => {
-  let electronApp;
   let dbPath;
 
   beforeAll(async () => {
@@ -24,25 +23,16 @@ describe('Electron App Smoke Test', () => {
   }, 30000);
 
   afterAll(async () => {
-    // Close the app
-    if (electronApp) {
-      await electronApp.close();
-    }
-
     // Clean up test database
     if (fs.existsSync(dbPath)) {
       fs.unlinkSync(dbPath);
     }
   });
 
-  test('should launch Electron app and establish database connection', async () => {
-    // Launch Electron app
+  async function launchElectronApp() {
     const args = [path.join(__dirname, '..', 'dist-electron', 'main.js')];
-    
-    // Add minimal args needed for Electron to run
     args.push('--no-sandbox');
     
-    // Add additional args for CI environment
     if (process.env.CI) {
       args.push(
         '--disable-dev-shm-usage', 
@@ -53,20 +43,96 @@ describe('Electron App Smoke Test', () => {
       );
     }
 
-    electronApp = await electron.launch({
+    return await electron.launch({
       args,
       cwd: path.join(__dirname, '..'),
       timeout: 30000
     });
+  }
 
-    // Just verify the app launched
-    expect(electronApp).toBeDefined();
-    
-    // Wait a bit for the database to initialize
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // Verify database was created (this means the app started successfully)
-    expect(fs.existsSync(dbPath)).toBe(true);
-    
+  test('should launch Electron app and establish database connection', async () => {
+    const electronApp = await launchElectronApp();
+
+    try {
+      // Just verify the app launched
+      expect(electronApp).toBeDefined();
+      
+      // Wait a bit for the database to initialize
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Verify database was created (this means the app started successfully)
+      expect(fs.existsSync(dbPath)).toBe(true);
+    } finally {
+      await electronApp.close();
+    }
+  }, 60000);
+
+  test('should display correct text on the landing page', async () => {
+    const electronApp = await launchElectronApp();
+
+    try {
+      // Get the first page (main window)
+      const page = await electronApp.firstWindow();
+      
+      // Wait for page to load
+      await page.waitForTimeout(2000);
+      
+      // Assert that the landing page text is visible
+      const element = await page.locator('text=Welcome to the Robots are here application!');
+      const isVisible = await element.isVisible();
+      expect(isVisible).toBe(true);
+    } finally {
+      await electronApp.close();
+    }
+  }, 60000);
+
+  test('should display correct text on the register page', async () => {
+    const electronApp = await launchElectronApp();
+
+    try {
+      // Get the first page (main window)
+      const page = await electronApp.firstWindow();
+      
+      // Wait for page to load
+      await page.waitForTimeout(2000);
+      
+      // Navigate to register page by clicking the "Get Started" button
+      await page.click('text=Get Started');
+      
+      // Wait for navigation
+      await page.waitForTimeout(1000);
+      
+      // Assert that the register page text is visible
+      const element = await page.locator('text=Create your account to get started');
+      const isVisible = await element.isVisible();
+      expect(isVisible).toBe(true);
+    } finally {
+      await electronApp.close();
+    }
+  }, 60000);
+
+  test('should display correct text on the login page', async () => {
+    const electronApp = await launchElectronApp();
+
+    try {
+      // Get the first page (main window)
+      const page = await electronApp.firstWindow();
+      
+      // Wait for page to load
+      await page.waitForTimeout(2000);
+      
+      // Navigate to login page by clicking the "Sign In" button
+      await page.click('text=Sign In');
+      
+      // Wait for navigation
+      await page.waitForTimeout(1000);
+      
+      // Assert that the login page text is visible
+      const element = await page.locator('text=Welcome back! Please sign in to your account');
+      const isVisible = await element.isVisible();
+      expect(isVisible).toBe(true);
+    } finally {
+      await electronApp.close();
+    }
   }, 60000);
 });
