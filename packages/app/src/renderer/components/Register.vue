@@ -79,10 +79,32 @@ const form = ref({
   password: ''
 })
 
+// Helper function to wait for electronAPI to be available
+const waitForElectronAPI = async (maxAttempts = 50, delayMs = 100) => {
+  for (let i = 0; i < maxAttempts; i++) {
+    if (window && (window as any).electronAPI && (window as any).electronAPI.registerUser) {
+      return true
+    }
+    await new Promise(resolve => setTimeout(resolve, delayMs))
+  }
+  return false
+}
+
 const handleSubmit = async () => {
   console.log('Register form submitted:', form.value)
   
   try {
+    // Check if electronAPI is available
+    if (!window) {
+      throw new Error('window object is not available')
+    }
+    
+    // Wait for electronAPI to be available (with timeout)
+    const apiAvailable = await waitForElectronAPI()
+    if (!apiAvailable) {
+      throw new Error('electronAPI.registerUser is not available after waiting. This might happen in test environments or if the preload script failed to load.')
+    }
+    
     // Convert reactive object to plain object for IPC serialization
     const userData = {
       name: form.value.name,

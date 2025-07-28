@@ -33,7 +33,10 @@ describe('Electron App Smoke Test', () => {
     const args = [path.join(__dirname, '..', 'dist-electron', 'main.js')];
     args.push('--no-sandbox');
     
-    if (process.env.CI) {
+    // Auto-detect headless mode - needed for CI and environments without display
+    const needsHeadless = process.env.CI || !process.env.DISPLAY || process.env.DISPLAY === '';
+    
+    if (needsHeadless) {
       args.push(
         '--disable-dev-shm-usage', 
         '--disable-gpu', 
