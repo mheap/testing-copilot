@@ -11,7 +11,7 @@
     "start": "electron dist-electron/main.js --no-sandbox",
     "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest",
     "test:unit": "NODE_OPTIONS=\"--experimental-vm-modules\" jest __tests__/database.test.mjs",
-    "test:e2e": "NODE_OPTIONS=\"--experimental-vm-modules\" jest __tests__/electron-app.test.mjs",
+    "test:e2e": "xvfb-run -a --server-args=\"-screen 0 1280x1024x24\" bash -c \"NODE_OPTIONS='--experimental-vm-modules' jest __tests__/electron-app.test.mjs\"",
     "test:ci": "jest --passWithNoTests",
     "clean": "rm -rf dist dist-electron"
   },
