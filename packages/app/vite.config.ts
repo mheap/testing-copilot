@@ -45,7 +45,7 @@ export default defineConfig(({ command }) => ({
             lib: {
               entry: 'src/preload.ts',
               formats: ['cjs'],
-              fileName: () => 'preload.cjs'
+              fileName: () => 'preload.mjs'
             },
             sourcemap: false,
             minify: false,
@@ -53,7 +53,7 @@ export default defineConfig(({ command }) => ({
             rollupOptions: {
               external: ['electron']
             },
-            target: 'node14'
+            target: 'node22'
           }
         }
       }
